@@ -68,6 +68,7 @@ int main(void)
           for(i = 0; i<len; i++){
               UART_transmitData(EUSCI_A0_BASE,response[i]);
           }
+          finished = false;
       }
 
     }
@@ -81,36 +82,44 @@ void initBoard()
 // TODO: FSM for detecting character sequence.
 bool charFSM(char rChar)
 {
-    static bool status;
-
+    static bool status = false;
+    static int count = 0;
     if(rChar == '2'){
         status = true;
+        count = 1;
         return false;
     }
     else if(rChar == '5'){
-       if(status == true){
+       if(status == true && count == 1){
+           count = 2;
         return false;
        }
        else{
         status = false;
+        count = 0;
         return false;
        }
     }
     else if(rChar == '3'){
-       if(status == true){
+       if(status == true && count == 2){
+           count = 3;
         return false;
        }
        else{
         status = false;
+        count = 0;
         return false;
        }
     }
     else if(rChar == '4'){
-       if(status == true){
+       if(status == true && count == 3){
+           status = false;
+           count = 0;
         return true;
        }
        else{
-        status = false;
+           status = false;
+           count = 0;
         return false;
        }
     }
