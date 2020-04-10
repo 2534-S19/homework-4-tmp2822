@@ -54,6 +54,7 @@ int main(void)
         if(rChar != 0xFF){
             if(UART_getInterruptStatus(EUSCI_A0_BASE, EUSCI_A_UART_TRANSMIT_INTERRUPT_FLAG)){
                 finished = charFSM(rChar);
+                UART_transmitData(EUSCI_A0_BASE,rChar);//push char to terminal
             }
         }
 
@@ -66,7 +67,9 @@ int main(void)
           int len = sizeof(response);
           int i;
           for(i = 0; i<len; i++){
-              UART_transmitData(EUSCI_A0_BASE,response[i]);
+              if(UART_getInterruptStatus(EUSCI_A0_BASE, EUSCI_A_UART_TRANSMIT_INTERRUPT_FLAG)){
+                  UART_transmitData(EUSCI_A0_BASE,response[i]);
+              }
           }
           finished = false;
       }
