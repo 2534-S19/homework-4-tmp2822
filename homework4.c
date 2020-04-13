@@ -67,10 +67,11 @@ int main(void)
            // UART_transmitData(EUSCI_A0_BASE,response);
       if(finished == true){
           int len = sizeof(response);
-          int i;
-          for(i = 0; i<len; i++){
+          int i =0;
+          while(i<len){
               if(UART_getInterruptStatus(EUSCI_A0_BASE, EUSCI_A_UART_TRANSMIT_INTERRUPT_FLAG)==EUSCI_A_UART_TRANSMIT_INTERRUPT_FLAG){
                   UART_transmitData(EUSCI_A0_BASE,response[i]);
+                  i++;
               }
           }
           finished = false;
